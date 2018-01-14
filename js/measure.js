@@ -1,108 +1,37 @@
-/*global digitalData,YT*/
-var digitalData = digitalData || {};
-digitalData._log = digitalData._log || [];
+/*global measure*/
+(function(window, document, measureFunctionName) {
+  /**
+   * Init Event Queue
+   */
+  window[measureFunctionName] = function() {
+    (window[measureFunctionName].q = window[measureFunctionName].q || []).push(arguments)
+  };
+   
+})(window, document, 'measure');
 
-var debug = function () {
-  if (! window.console || ! console.log) {
-    return;
-  }
-  return Function.prototype.bind.call(console.log, console);
-} ();
 /**
- * Update the Instance Variable with the new functionality
- * @param measure {function} The original function with page data
- * @param measure.q {Array}
+ * Request External Javascript Asynchronously
+ * @param url {string}
  */
-var measure = (function (measure) {
-  /**
-   * New function to operate the gathered data
-   * @method measureInterface
-   * @param data {object} Object with data to measure
-   */
-  var measureInterface = function (data) {
-    var digitalDataSnapshot;
-    if (typeof data.event !== "undefined") {
-      measureInterface._fired = true;
-      measureInterface._process(data);
-      digitalData = measureInterface._deepMerge(digitalData, data);
-      digitalDataSnapshot = JSON.parse(JSON.stringify(digitalData));
-      delete digitalDataSnapshot._log;
-      debug("Event captured. Available data:");
-      debug(JSON.stringify(digitalDataSnapshot, null, 4));
-      debug("---------------------------------------------");
-      data._timestamp = new Date().getTime();
-      digitalData._log.push(data);
-    } else {
-      throw "Missing Event ID";
-    }
-  };
+measure._requestAsyncScript = function (url) {
+  var s = document.createElement('script'),
+    x = document.getElementsByTagName('script')[0];
+  s.type = 'text/javascript';
+  s.async = true;
+  s.src = url;
+  x.parentNode.insertBefore(s, x);
+};
 
-  /**
-   * Fired flag to fallback to the automatic URL-based measurement
-   * @private
-   */
-  measureInterface._fired = false;
 
-  /**
-   * Function to merge objects recursively
-   * @param target
-   * @param src
-   * @returns {boolean|*|Boolean|Array|{}}
-   * @private
-   */
-  measureInterface._deepMerge = function (target, src) {
-    var isArray = Array.isArray(src);
-    var dst = isArray && src || {};
-
-    if (!isArray) {
-      if (target && typeof target === "object") {
-        Object.keys(target).forEach(function (key) {
-          dst[key] = target[key];
-        })
-      }
-      Object.keys(src).forEach(function (key) {
-        if (typeof src[key] !== "object" || !src[key]) {
-          dst[key] = src[key];
-        }
-        else {
-          if (!target[key]) {
-            dst[key] = src[key];
-          } else {
-            dst[key] = measureInterface._deepMerge(target[key], src[key]);
-          }
-        }
-      });
-    }
-
-    return dst;
-  };
-
-  /**
-   * Default measure process function to override
-   * @method _process
-   * @private
-   * @param data {object} Object with data to measure
-   * @param data.contact {String}
-   * @param data.error {String}
-   * @param data.fileNAme {String}
-   * @param data.username {String}
-   */
-  measureInterface._process = function (data) {
-    dataLayer.push(data);
-  };
-  return measureInterface;
-}(measure));
+/*
+ * Adobe Launch / DEV
+ */
+measure._requestAsyncScript('https://assets.adobedtm.com/launch-EN739cecd6429046369516eef56eea02b2-development.js');
 
 /*
  * Init Youtube Iframe API
  */
-(function() {
-  var tag = document.createElement("script");
-  tag.src = "https://www.youtube.com/iframe_api";
-  var firstScriptTag = document.getElementsByTagName("script")[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-})();
-
+measure._requestAsyncScript('https://www.youtube.com/iframe_api');
 
 /*
  * Global Variable for available Youtube players
@@ -114,7 +43,7 @@ var youtubePlayers = [],
  * Refresh iframes without enabled API
  */
 function refreshIframeAPI() {
-  for (var iframes = document.getElementsByTagName("iframe"), i = iframes.length; i--;) {
+  for (var iframes = document.getElementsByTagName('iframe'), i = iframes.length; i--;) {
     if (/youtube.com\/embed/.test(iframes[i].src)) {
       youtubePlayerIframes.push(iframes[i]);
       if (iframes[i].src.indexOf('enablejsapi=') === -1) {
@@ -129,7 +58,7 @@ function onYouTubeIframeAPIReady() {
   for (var i = 0; i < youtubePlayerIframes.length; i++) {
     youtubePlayers.push(new YT.Player(youtubePlayerIframes[i], {
       events: {
-        "onStateChange": onPlayerStateChange
+        'onStateChange': onPlayerStateChange
       }
     }));
   }
@@ -140,13 +69,13 @@ function onPlayerStateChange(event) {
   videoData = event.target.getVideoData();
   switch (event.data) {
   case YT.PlayerState.PLAYING:
-    measure({event: "videoPlay", video: {id: videoData.video_id, title: videoData.title}});
+    measure({event: 'videoPlay', video: {id: videoData.video_id, title: videoData.title}});
     break;
   case YT.PlayerState.PAUSED:
-    measure({event: "videoPause", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
+    measure({event: 'videoPause', video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
     break;
   case YT.PlayerState.ENDED:
-    measure({event: "videoEnd", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
+    measure({event: 'videoEnd', video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
     break;
   }
 }
