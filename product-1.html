@@ -51,7 +51,10 @@
     digitalData.pageType = "product";
     digitalData.product = "Product 1";</script>
     <!-- Measurement goes here-->
-    <script type="text/javascript">var trackAnalytics = trackAnalytics || [];</script>
+    <script type="text/javascript">
+      var trackAnalytics = trackAnalytics || [];
+      trackAnalytics.push(Object.assign({}, digitalData));
+    </script>
     <script type="text/javascript" src="https://assets.adobedtm.com/launch-EN526e3f7da87743b1b2a16af9fb4e67d3-development.js" async></script>
   </head>
   <body>
