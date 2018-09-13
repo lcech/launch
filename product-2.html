@@ -52,8 +52,9 @@
     digitalData.product = "Product 2";
     digitalData.formId = "Wizard";
     digitalData.formStep = "1";</script>
-    <!-- Measure Interface-->
-    <script type="text/javascript" src="/js/measure.js"></script>
+    <!-- Measurement goes here-->
+    <script type="text/javascript">var trackAnalytics = trackAnalytics || [];</script>
+    <script type="text/javascript" src="https://assets.adobedtm.com/launch-EN526e3f7da87743b1b2a16af9fb4e67d3-development.js" async></script>
   </head>
   <body>
     <div role="navigation" class="navbar navbar-default">
@@ -68,14 +69,14 @@
             <li class="active"><a href="/product-2.html">Product 2</a></li>
             <li><a href="/product-3.html">Product 3</a></li>
             <li><a href="/contact.html">Contact</a></li>
+            <form id="loginForm" role="form" style="display: none;" class="navbar-form navbar-right">
+              <div class="form-group">
+                <input type="text" name="username" placeholder="Username" class="form-control"> 
+                <input type="password" name="password" placeholder="Password" class="form-control"> 
+                <button type="submit" class="btn btn-success">Sign in</button>
+              </div>
+            </form>
           </ul>
-          <form id="loginForm" role="form" style="display: none;" class="navbar-form navbar-right">
-            <div class="form-group">
-              <input type="text" name="username" placeholder="Username" class="form-control"> 
-              <input type="password" name="password" placeholder="Password" class="form-control"> 
-              <button type="submit" class="btn btn-success">Sign in</button>
-            </div>
-          </form>
         </div>
         <!-- /.navbar-collapse-->
       </div>
@@ -155,7 +156,7 @@
     <hr>
     <div class="container">
       <footer>
-        <p><small>&copy; <a href='http://activate.etnetera.cz'>Etnetera Activate</a> 2015</small></p>
+        <p><small>&copy; <a href='https://www.activate.cz'>Activate</a></small></p>
       </footer>
       <!-- /container-->
     </div>
@@ -163,7 +164,7 @@
     <!-- ==================================================-->
     <script src="/assets/js/bootstrap.min.js"></script>
     <script src="/js/app.js"></script>
-    <!-- TODO: Fire Tags-->
+    <!-- DTM Footer Code-->
     <script type="text/javascript">measure({event: "pageLoaded"});</script>
   </body>
 </html>
