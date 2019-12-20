@@ -77,8 +77,7 @@ window.btoa = window.btoa || function () {
 
   // Login
   function login(loggedInUser) {
-    var $loginForm,
-        eventData;
+    var $loginForm;
 
     $loginForm = $("#loginForm");
     $loginForm.after("<span id=\"loggedInUser\" class=\"navbar-text navbar-right\">Logged in as: <strong>" + loggedInUser + "</strong></span>");
